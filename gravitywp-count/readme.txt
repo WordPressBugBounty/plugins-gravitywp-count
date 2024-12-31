@@ -3,8 +3,8 @@ Contributors: gravitywp
 Donate link: https://gravitywp.com/about/
 Tags: gravity forms, number field, count, form, forms, gravity form
 Requires at least: 3.0.1
-Tested up to: 6.3
-Stable tag: 0.9.10
+Tested up to: 6.7
+Stable tag: 0.9.13
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,6 +31,15 @@ The most extensive version of the shortcode (display the total value of a number
 Upload the plugin files to the `/wp-content/plugins/gravitywp-count` directory, or install the plugin through the WordPress plugins screen directly.
 
 == Changelog ==
+
+= 0.9.13 =
+- Correct version number.
+
+= 0.9.12 =
+* Minor optimization: Validate form ids before running the query.
+
+= 0.9.11 =
+* Option to use form_id instead of formid as parameter.
 
 = 0.9.10 =
 * Fix for greater_than and less_than operators not working.

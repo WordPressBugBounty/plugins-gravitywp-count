@@ -4,7 +4,7 @@
  * Plugin URI: https://gravitywp.com/add-on/count/
  * Description: Adds a shortcode to count, filter and display Gravity Forms entries or the total of a number field in multiple entries.
  * Author: GravityWP
- * Version: 0.9.10
+ * Version: 0.9.13
  * Author URI: https://gravitywp.com/add-on/count/
  * License: GPL2
  */
@@ -12,16 +12,17 @@
 if ( class_exists( 'GFForms' ) ) {
 
 	/**
-	 * gravitywp_count_func.
+	 * Gravitywp_count_func.
 	 *
-	 * @param	array<mixed>	$atts   	
-	 * @param	string|null	$content	Default: null
-	 * @return	string
+	 * @param   array<mixed> $atts       Attributes.
+	 * @param   string|null  $content    Default: null.
+	 * @return  string
 	 */
 	function gravitywp_count_func( $atts, $content = null ) {
 		$atts = shortcode_atts(
 			array(
 				'formid'                   => '0',
+				'form_id'                  => '0',
 				'formstatus'               => 'active',
 				'number_field'             => false,
 				'filter_mode'              => 'all',
@@ -58,7 +59,23 @@ if ( class_exists( 'GFForms' ) ) {
 			$atts
 		);
 
-		$formids                  = $atts['formid'];
+		// Merge value of form_id and formid parameters.
+		if ( $atts['formid'] !== '0' && $atts['form_id'] === '0' ) {
+			$formids = $atts['formid']; // parameter formid is used.
+		} elseif ( $atts['form_id'] !== '0' && $atts['formid'] === '0' ) {
+			$formids = $atts['formid']; // parameter form_id is used.
+		} else {
+			$formids = '0'; // default value.
+		}
+
+		// check for valid form id notation.
+		$formids = explode( ',', $formids );
+		$formids = array_map( 'absint', $formids );
+		$formids = array_filter( $formids );
+		if ( count( $formids ) === 0 ) {
+			return 'Invalid form ID';
+		}
+
 		$formstatus               = $atts['formstatus'];
 		$number_field             = $atts['number_field'];
 		$filter_mode              = $atts['filter_mode'];
@@ -236,21 +253,20 @@ if ( class_exists( 'GFForms' ) ) {
 			}
 		}
 
-		/** Replace greather_than and less_than operators with < or > */
-		if ( isset ( $search_criteria ) && array_key_exists( 'field_filters', $search_criteria ) ) {
-			foreach( $search_criteria['field_filters'] as $index => $filter ) {
+		// Replace greather_than and less_than operators with < or >.
+		if ( array_key_exists( 'field_filters', $search_criteria ) ) {
+			foreach ( $search_criteria['field_filters'] as $index => $filter ) {
 				if ( is_array( $filter ) ) {
-					if( array_key_exists( 'operator', $filter ) && $filter['operator'] === 'greater_than' ) {
-						$search_criteria['field_filters'][$index]['operator'] = '>';
+					if ( array_key_exists( 'operator', $filter ) && $filter['operator'] === 'greater_than' ) {
+						$search_criteria['field_filters'][ $index ]['operator'] = '>'; // @phpstan-ignore-line Cannot assign offset 'operator' to array.
 					}
-					if( array_key_exists( 'operator', $filter ) && $filter['operator'] === 'less_than' ) {
-						$search_criteria['field_filters'][$index]['operator'] = '<';
+					if ( array_key_exists( 'operator', $filter ) && $filter['operator'] === 'less_than' ) {
+						$search_criteria['field_filters'][ $index ]['operator'] = '<'; // @phpstan-ignore-line Cannot assign offset 'operator' to array.
 					}
 				}
 			}
 		}
 
-		$formids      = explode( ',', $formids );
 		$countentries = GFAPI::count_entries( $formids, $search_criteria );
 		$raw_value    = floatval( $add_number ) + $countentries;
 
@@ -277,7 +293,7 @@ if ( class_exists( 'GFForms' ) ) {
 			$raw_value = floatval( $add_number );
 
 			// Loop through each entry and add number to count.
-			for ( $row = 0; $row < $countentries; $row ++ ) {
+			for ( $row = 0; $row < $countentries; $row++ ) {
 				$raw_value += is_numeric( $entries[ $row ][ $number_field ] ) ? floatval( $entries[ $row ][ $number_field ] ) : 0;
 			}
 			// Apply multiplier to value.
