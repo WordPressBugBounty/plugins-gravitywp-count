@@ -4,7 +4,7 @@
  * Plugin URI: https://gravitywp.com/add-on/count/
  * Description: Adds a shortcode to count, filter and display Gravity Forms entries or the total of a number field in multiple entries.
  * Author: GravityWP
- * Version: 0.9.13
+ * Version: 0.9.14
  * Author URI: https://gravitywp.com/add-on/count/
  * License: GPL2
  */
@@ -63,18 +63,11 @@ if ( class_exists( 'GFForms' ) ) {
 		if ( $atts['formid'] !== '0' && $atts['form_id'] === '0' ) {
 			$formids = $atts['formid']; // parameter formid is used.
 		} elseif ( $atts['form_id'] !== '0' && $atts['formid'] === '0' ) {
-			$formids = $atts['formid']; // parameter form_id is used.
+			$formids = $atts['form_id']; // parameter form_id is used.
 		} else {
 			$formids = '0'; // default value.
 		}
-
-		// check for valid form id notation.
 		$formids = explode( ',', $formids );
-		$formids = array_map( 'absint', $formids );
-		$formids = array_filter( $formids );
-		if ( count( $formids ) === 0 ) {
-			return 'Invalid form ID';
-		}
 
 		$formstatus               = $atts['formstatus'];
 		$number_field             = $atts['number_field'];

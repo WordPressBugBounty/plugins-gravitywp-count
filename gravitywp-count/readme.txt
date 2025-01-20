@@ -4,7 +4,7 @@ Donate link: https://gravitywp.com/about/
 Tags: gravity forms, number field, count, form, forms, gravity form
 Requires at least: 3.0.1
 Tested up to: 6.7
-Stable tag: 0.9.13
+Stable tag: 0.9.14
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,6 +31,9 @@ The most extensive version of the shortcode (display the total value of a number
 Upload the plugin files to the `/wp-content/plugins/gravitywp-count` directory, or install the plugin through the WordPress plugins screen directly.
 
 == Changelog ==
+
+= 0.9.14 =
+- Fix a bug introduced in 0.9.12, where the total entries of all forms wasn't counted anymore when the formid parameter is not present.
 
 = 0.9.13 =
 - Correct version number.
